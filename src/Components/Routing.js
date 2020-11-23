@@ -7,18 +7,22 @@ import {
 } from "react-router-dom";
 import Login from "./Login";
 import Orders from "./Orders";
+import NavMenu from "./NavMenu";
 import { AuthContext } from "../Firebase/context";
 
 
 function Routing(){
-  const user = useContext(AuthContext);
-  console.log(user);
-  return (
+ const user = useContext(AuthContext);
 
+  console.log('Routing.user', user);
+  return (
     <Router>
+      {user ?
+      <NavMenu/>: null}
       <Switch>
         <Route path="/orders">
-          {!user ? <Redirect to="/login" /> : <Orders/>}
+          {!user ? <Redirect to="/login" /> : 
+          <Orders/>}
         </Route>
       
         <Route path="/login">
