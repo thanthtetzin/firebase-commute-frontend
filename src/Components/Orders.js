@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
-
 import { firebaseAuth } from "../Firebase/init";
 import axios from 'axios';
 
-
-
- function Orders() {
+function Orders() {
   console.log(process.env.REACT_APP_BACKEND_API_ENDPOINT)
   
   useEffect(() => {
@@ -20,15 +17,25 @@ import axios from 'axios';
           console.log('idToken ', idToken);
           const result = await client({
             method: 'get',
-            url: `/users/${firebaseAuth.currentUser.uid}`,
+            url: `/doc/users/${firebaseAuth.currentUser.uid}`,
             headers: {
               'AuthToken': idToken
             }
           });
           console.log('GetUser result: ' , result);
+          
+          const searchParams = {
+            collectionName: 'orders',
+            filters: [],
+            orderBy:{
+              fieldName: 'bookingDate',
+              direction: 'desc'
+            },
+            limit: 5,
+          }
           const orderRes = await client({
             method: 'get',
-            url: `/orders`,
+            url: `/documents/?searchParams=${JSON.stringify(searchParams)}`,
             headers: {
               'AuthToken': idToken
             }
