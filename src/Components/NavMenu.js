@@ -3,13 +3,12 @@ import {
   Redirect,
   useHistory
 } from "react-router-dom";
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Snackbar from '@material-ui/core/Snackbar';
+import {
+  makeStyles, IconButton, Button, Menu, MenuItem, Snackbar
+} from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
-import { makeStyles } from '@material-ui/core/styles';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import ListAltIcon from '@material-ui/icons/ListAlt';
 import { firebaseAuth } from "../Firebase/init";
 
 function Alert(props) {
@@ -20,6 +19,16 @@ const useStyles = makeStyles({
   float_right: {
     float: 'right'
   },
+  padding_13: {
+    padding: '13px'
+  },
+  margin_right_5px: {
+    "margin-right": "5px"
+  },
+  nav_menu: {
+    height: '50px',
+    "box-shadow": "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+  }
 });
 export default function NavMenu() {
   const classes = useStyles();
@@ -56,8 +65,8 @@ export default function NavMenu() {
   }
 
   return (
-    <div className={classes.float_right}>
-      <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleProfileIconClick} size="small">
+    <div className={classes.nav_menu}>
+      <IconButton className={`${classes.padding_13} ${classes.float_right}`} aria-controls="simple-menu" aria-haspopup="true" onClick={handleProfileIconClick} size="small">
         <AccountCircleIcon color="primary" />
       </IconButton>
       <Menu
@@ -76,6 +85,16 @@ export default function NavMenu() {
           This is a success message!
         </Alert>
       </Snackbar>
+      
+      <Button 
+        color="primary" 
+        className={`${classes.padding_13} ${classes.float_right}`}
+        onClick={() => {history.push('/orders')}}
+      >
+        <ListAltIcon color="primary" className={`${classes.margin_right_5px}`} />
+        Orders
+      </Button>
+      
     </div>
   );
 }
