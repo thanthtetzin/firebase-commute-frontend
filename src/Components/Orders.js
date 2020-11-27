@@ -18,7 +18,13 @@ function Orders() {
     { id: 'title', label: 'Title', minWidth: 170, },
     { 
       id: 'bookingDate', label: 'Booking Date', minWidth: 100,
-      format: (value) => value._seconds ? value._seconds : ''
+      format: (value) => {
+        if(value._seconds) {
+          return value._seconds;
+        } else{
+          return value;
+        }
+      }
     },
     { 
       id: 'address', label: 'Address', minWidth: 100,
@@ -28,7 +34,18 @@ function Orders() {
       id: 'customer', label: 'Customer', minWidth: 100,
       format: (value) => value.name ? value.name : '', 
     },
-  ]
+  ];
+  const fieldNameForStartAfter = 'bookingDate._seconds';
+  const searchParams = {
+    collectionName: 'orders',
+    filters: [],
+    orderBy: {
+      fieldName: 'customer',
+      direction: 'asc'
+    },
+    limit: 5,
+  }
+  const apiEndPoint = '/documents/?searchParams=';
   
   useEffect(() => {
     async function sendRequest() {
@@ -52,11 +69,11 @@ function Orders() {
           const searchParams = {
             collectionName: 'orders',
             filters: [],
-            orderBy:{
-              fieldName: 'bookingDate',
+            orderBy: {
+              fieldName: 'title',
               direction: 'desc'
             },
-            limit: 5,
+            limit: 50,
           }
           const orderRes = await client({
             method: 'get',
@@ -66,7 +83,7 @@ function Orders() {
             }
           });
           console.log('GetOrders result: ' , orderRes);
-          setData({ ...data, rows: orderRes.data || null });
+          //setData({ ...data, rows: orderRes.data || null });
         }
         catch(error){
           console.log(error)
@@ -81,7 +98,7 @@ function Orders() {
   return (
     <div>
       <h2>Orders</h2>
-      <DataTable columns={columns} rows={data.rows} />
+      <DataTable columns={columns} searchParams={searchParams} apiEndPoint={apiEndPoint} fieldNameForStartAfter={fieldNameForStartAfter} />
     </div>
   )
 }
