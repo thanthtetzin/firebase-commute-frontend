@@ -2,27 +2,34 @@ import { makeStyles } from '@material-ui/core/styles';
 import React, { useState, useRef, useEffect } from 'react';
 import {
   Table, TableHead, TableBody,TableCell,TableContainer,TableFooter,TablePagination,TableRow,
-  Paper,IconButton, Grid
+  Paper,IconButton, Grid, CircularProgress
 }
 from '@material-ui/core';
 import { firebaseAuth } from "../Firebase/init";
 import axios from 'axios';
-import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { KeyboardArrowLeftRounded, KeyboardArrowRightRounded } from '@material-ui/icons';
 import _get from 'lodash/get';
+import "./DataTable.scss";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(() => ({
   root: {
     width: 'auto',
     paddingLeft: 20,
     paddingRight: 20
   },
   container: {
-    //maxHeight: 460,
+    minHeight: 580,
   },
   center: {
-    textAlign: 'center'
-  }
-});
+    position: "absolute",
+    left: '47%'
+  },
+  spinnerRoot: {
+    position: "absolute",
+    top: "50%",
+    left: '50%',
+  },
+}));
 
 function Datatable(props){
   const classes = useStyles();
@@ -34,9 +41,12 @@ function Datatable(props){
       rows: [],
       firstItemInRows: null,
       lastItemInRows: null,
-    }
+    },
+    isLoading: true,
   });
-  let isLoading = useRef(true);
+  //let data.isLoading = useRef(true);
+  let prevButtonDisable = useRef(false);
+  let nextButtonDisable = useRef(false);
   const prevFirstItemInRows = useRef(null);
   const prevFirstItems = useRef([]);
 
@@ -55,15 +65,18 @@ function Datatable(props){
       if(searchParamsCopy.startAt){
         delete searchParamsCopy.startAt;
       }
-      isLoading = true;
+      data.isLoading = true;
       setData({ ...data, searchParams: searchParamsCopy || null });
     }
   };
   const handlePrevButtonClick = (event) => {
-    if(!data.listData.firstItemInRows) {
+    console.log(data.listData)
+    if(!data.listData.firstItemInRows && data.listData.rows.length) {
       return;
     }
-    const prevFirstItemInfo = prevFirstItems.current.find(f => f.firstItemInRows === data.listData.firstItemInRows);
+    const prevFirstItemInfo = data.listData.rows.length ? 
+                              prevFirstItems.current.find(f => f.firstItemInRows === data.listData.firstItemInRows) :
+                              prevFirstItems.current[prevFirstItems.current.length - 1];
     if(prevFirstItemInfo && prevFirstItemInfo.prevFirstItem){
       const searchParamsCopy = JSON.parse(JSON.stringify(data.searchParams));
       searchParamsCopy.startAt = prevFirstItemInfo.prevFirstItem;
@@ -71,10 +84,15 @@ function Datatable(props){
       if(searchParamsCopy.startAfter){
         delete searchParamsCopy.startAfter;
       }
-      isLoading = true;
+      data.isLoading = true;
       setData({ ...data, searchParams: searchParamsCopy || null });
     }
   };
+  const handlePrevNextButtonDisable = () => {
+    const prevFirstItemInfo = prevFirstItems.current.find(f => f.firstItemInRows === data.listData.firstItemInRows);
+    prevButtonDisable.current = (prevFirstItemInfo && !prevFirstItemInfo.prevFirstItem) || data.isLoading ? true : false;
+    nextButtonDisable.current = data.isLoading ? true : false;
+  }
   
   const loadData = async () => {
     const axiosClient = axios.create({
@@ -98,13 +116,14 @@ function Datatable(props){
           firstItemInRows: rows.length ? rows[0].uid : null,
           lastItemInRows: rows.length && rows[rows.length - 1] ? rows[rows.length - 1].uid : null
         }
+
         pushToPrevFirsItems({
           firstItemInRows: newListData.firstItemInRows,
           prevFirstItem: prevFirstItemInRows.current
         });
         console.log('prevFirstItems: ', prevFirstItems.current);
-console.log(rows)
-        isLoading = false;
+        
+        data.isLoading = false;
         setData({ ...data, listData: newListData || null });
         //setData({ ...data, firstItemInRows: rows.length ? rows[0].uid : null });
         //setData({ ...data, lastItemInRows: rows.length && dataResult.data[dataResult.data.length - 1] ?  dataResult.data[dataResult.data.length - 1].uid : null });
@@ -118,14 +137,40 @@ console.log(rows)
     // Using an IIFE
     (async function anyNameFunction() {
       await loadData();
+      
     })();
   }, [data.searchParams]);
   
-
+  handlePrevNextButtonDisable();
+  
+  const rowsLoadedTable = <TableBody>
+      {data.listData.rows.map((row, rowindex) => {
+        return(
+          <TableRow hover role="checkbox" tabIndex={-1} key={`dataRow-${rowindex}`}>
+            {columns.map((column) => {
+              const rowfieldVal = row[column.id];
+              // console.log(rowfieldVal)
+              // console.log(fieldVal);
+              let cellVal = '';
+              if (rowfieldVal) {
+                cellVal = column.format ? column.format(rowfieldVal) : rowfieldVal;
+              }
+              // console.log(cellVal);
+              return(
+                <TableCell key={`dataRow-${rowindex}-dataCell-${column.id}`} >
+                  {cellVal}
+                </TableCell>
+              );
+            })}
+          </TableRow>
+        );
+      })}
+    </TableBody>;
+  const spinnner = <div className={classes.spinnerRoot}><CircularProgress /></div>
   return (
     <div className={classes.root}>
       <TableContainer className={classes.container}>
-        <Table stickyHeader aria-label="sticky table">
+        <Table stickyHeader aria-label="sticky table" id="dataTable">
           <TableHead>
             <TableRow key={`columnLabelsRow`}>
               {columns.map((column) => (
@@ -139,39 +184,22 @@ console.log(rows)
               ))}
             </TableRow>
           </TableHead>
-          <TableBody>
-            {data.listData.rows.map((row, rowindex) => {
-              return(
-                <TableRow hover role="checkbox" tabIndex={-1} key={`dataRow-${rowindex}`}>
-                  {columns.map((column) => {
-                    const rowfieldVal = row[column.id];
-                    // console.log(rowfieldVal)
-                    // console.log(fieldVal);
-                    let cellVal = '';
-                    if (rowfieldVal) {
-                      cellVal = column.format ? column.format(rowfieldVal) : rowfieldVal;
-                    }
-                    // console.log(cellVal);
-                    return(
-                      <TableCell key={`dataRow-${rowindex}-dataCell-${column.id}`} >
-                        {cellVal}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-          </TableBody>
+          
+          {!data.isLoading ? rowsLoadedTable : null}
+          
+          
+          
         </Table>
+        {data.isLoading ? spinnner : null }
       </TableContainer>
       {
-        data.listData.rows.length ?
+        prevFirstItems.current.length ?
         <Grid item className={classes.center}>
-          <IconButton onClick={handlePrevButtonClick} aria-label="previous page" color="primary">
-            <KeyboardArrowLeft />
+          <IconButton disabled={prevButtonDisable.current} onClick={handlePrevButtonClick} aria-label="previous page" color="primary">
+            <KeyboardArrowLeftRounded />
           </IconButton>
-          <IconButton onClick={handleNextButtonClick} aria-label="next page" color="primary">
-            <KeyboardArrowRight />
+          <IconButton disabled={nextButtonDisable.current} onClick={handleNextButtonClick} aria-label="next page" color="primary">
+            <KeyboardArrowRightRounded />
           </IconButton>
         </Grid>
        :
@@ -180,6 +208,7 @@ console.log(rows)
     </div>
   )
 }
+  
 
 
 export default Datatable;

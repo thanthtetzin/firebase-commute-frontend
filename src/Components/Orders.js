@@ -8,8 +8,15 @@ import DataTable from './DataTable';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
+const useStyles = makeStyles(() => ({
+  orderH3: {
+    paddingTop: '10px',
+    paddingLeft: '20px'
+  },
+}));
 function Orders() {
-  console.log(process.env.REACT_APP_BACKEND_API_ENDPOINT)
+  const classes = useStyles();
+  //console.log(process.env.REACT_APP_BACKEND_API_ENDPOINT)
   const [data, setData] = React.useState({
     rows: [],
   });
@@ -98,7 +105,7 @@ function Orders() {
   
   return (
     <div>
-      <h2>Orders</h2>
+      <h3 className={classes.orderH3}>Orders</h3>
       <DataTable columns={columns} searchParams={searchParams} apiEndPoint={apiEndPoint} fieldNameForStartAfter={fieldNameForStartAfter} />
     </div>
   )

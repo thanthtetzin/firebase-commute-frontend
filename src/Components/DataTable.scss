@@ -1,0 +1,12 @@
+#dataTable {
+  .MuiTableCell-root{
+    border-bottom: 0px !important
+  }
+  .MuiTableCell-head{
+    background-color: transparent;
+    font-weight: bold;
+    border-top: 1px solid #c8ced3;
+    border-bottom: 1px solid hsl(207, 11%, 81%) !important;
+  }
+ 
+} 
