@@ -40,10 +40,11 @@ function Orders() {
     collectionName: 'orders',
     filters: [],
     orderBy: {
+      //fieldName: 'customer',
       fieldName: 'customer',
       direction: 'asc'
     },
-    limit: 5,
+    limit: 10,
   }
   const apiEndPoint = '/documents/?searchParams=';
   
@@ -70,10 +71,10 @@ function Orders() {
             collectionName: 'orders',
             filters: [],
             orderBy: {
-              fieldName: 'title',
-              direction: 'desc'
+              fieldName: 'customer',
+              direction: 'asc'
             },
-            limit: 50,
+            limit: 500,
           }
           const orderRes = await client({
             method: 'get',

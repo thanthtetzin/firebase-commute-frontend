@@ -17,7 +17,7 @@ const useStyles = makeStyles({
     paddingRight: 20
   },
   container: {
-    maxHeight: 440,
+    //maxHeight: 460,
   },
   center: {
     textAlign: 'center'
@@ -25,7 +25,6 @@ const useStyles = makeStyles({
 });
 
 function Datatable(props){
-  console.log(props)
   const classes = useStyles();
   const columns = props.columns ? props.columns : [];
   const apiEndPoint = props.apiEndPoint || null;
@@ -33,33 +32,48 @@ function Datatable(props){
     searchParams: props.searchParams || null,
     listData: {
       rows: [],
+      firstItemInRows: null,
       lastItemInRows: null,
     }
   });
   let isLoading = useRef(true);
-  const previousLastItemInRows = useRef(null);
+  const prevFirstItemInRows = useRef(null);
+  const prevFirstItems = useRef([]);
+
+  const pushToPrevFirsItems = (data) => {
+    if(!prevFirstItems.current.some(f => f.firstItemInRows === data.firstItemInRows)){
+      prevFirstItems.current.push(data);
+    }
+  }
 
   const handleNextButtonClick = (event) => {
-    console.log(data.listData.lastItemInRows)
+    prevFirstItemInRows.current = data.listData.firstItemInRows;
     if(data.listData.lastItemInRows){
       const searchParamsCopy = JSON.parse(JSON.stringify(data.searchParams));
-      searchParamsCopy.lastItemInRows = data.listData.lastItemInRows;
-      // if(searchParamsCopy.endBefore) {
-      //   delete searchParamsCopy.endBefore;
-      // }
+      searchParamsCopy.startAfter = data.listData.lastItemInRows;
+
+      if(searchParamsCopy.startAt){
+        delete searchParamsCopy.startAt;
+      }
       isLoading = true;
       setData({ ...data, searchParams: searchParamsCopy || null });
     }
   };
   const handlePrevButtonClick = (event) => {
-    console.log(previousLastItemInRows)
-    if(!previousLastItemInRows.current) {
+    if(!data.listData.firstItemInRows) {
       return;
     }
-    const searchParamsCopy = JSON.parse(JSON.stringify(data.searchParams));
-    searchParamsCopy.lastItemInRows = previousLastItemInRows.current;
-    isLoading = true;
-    setData({ ...data, searchParams: searchParamsCopy || null });
+    const prevFirstItemInfo = prevFirstItems.current.find(f => f.firstItemInRows === data.listData.firstItemInRows);
+    if(prevFirstItemInfo && prevFirstItemInfo.prevFirstItem){
+      const searchParamsCopy = JSON.parse(JSON.stringify(data.searchParams));
+      searchParamsCopy.startAt = prevFirstItemInfo.prevFirstItem;
+
+      if(searchParamsCopy.startAfter){
+        delete searchParamsCopy.startAfter;
+      }
+      isLoading = true;
+      setData({ ...data, searchParams: searchParamsCopy || null });
+    }
   };
   
   const loadData = async () => {
@@ -77,15 +91,19 @@ function Datatable(props){
             'AuthToken': idToken
           }
         });
-        //console.log('hi: ' , data.listData.lastItemInRows);
         
-
         const rows = dataResult.data;
         const newListData = {
           rows: rows,
-          //firstItemInRows: rows.length ? rows[0].uid : null,
+          firstItemInRows: rows.length ? rows[0].uid : null,
           lastItemInRows: rows.length && rows[rows.length - 1] ? rows[rows.length - 1].uid : null
         }
+        pushToPrevFirsItems({
+          firstItemInRows: newListData.firstItemInRows,
+          prevFirstItem: prevFirstItemInRows.current
+        });
+        console.log('prevFirstItems: ', prevFirstItems.current);
+console.log(rows)
         isLoading = false;
         setData({ ...data, listData: newListData || null });
         //setData({ ...data, firstItemInRows: rows.length ? rows[0].uid : null });
