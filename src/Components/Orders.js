@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { firebaseAuth } from "../Firebase/init";
 import axios from 'axios';
-
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import DataTable from './DataTable';
-
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import moment from 'moment';
 import 'moment-timezone';
 
@@ -18,11 +14,6 @@ const useStyles = makeStyles(() => ({
 }));
 function Orders() {
   const classes = useStyles();
-  //console.log(process.env.REACT_APP_BACKEND_API_ENDPOINT)
-  const [data, setData] = React.useState({
-    rows: [],
-  });
-
   const columns = [
     { id: 'docId', label: 'ID', minWidth: 170, },
     { id: 'title', label: 'Title', minWidth: 170, },
@@ -55,7 +46,6 @@ function Orders() {
       ]
     }
   ];
-  const editDataPath = '/orders/edit/';
   const searchParams = {
     collectionName: 'orders',
     filters: [],
@@ -107,28 +97,20 @@ function Orders() {
             }
           });
           console.log('GetOrders result: ' , orderRes);
-          //setData({ ...data, rows: orderRes.data || null });
         }
         catch(error){
           console.log(error)
         }
       }
-      //setToken(token);
     }
-    sendRequest();
+    // sendRequest();
  }, [])
  
-  
   return (
     <div>
       <h3 className={classes.orderH3}>Orders</h3>
-      <DataTable columns={columns} searchParams={searchParams} apiEndPoint={apiEndPoint} editDataPath={editDataPath} />
+      <DataTable columns={columns} searchParams={searchParams} apiEndPoint={apiEndPoint} />
     </div>
   )
 }
-
-
-
-
-
 export default Orders;

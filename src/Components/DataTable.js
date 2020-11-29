@@ -141,13 +141,11 @@ function Datatable(props){
       }
     }
   }
+
   useEffect(() => {
-    // Using an IIFE
-    (async function anyNameFunction() {
-      await loadData();
-      
-    })();
-  }, [data.searchParams]);
+    // This effect dependes on data.searchParams state val
+    loadData();
+  }, [data.searchParams])
   
   handlePrevNextButtonDisable();
   
