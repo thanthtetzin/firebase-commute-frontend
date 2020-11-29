@@ -13,23 +13,26 @@ import { AuthContext } from "../Firebase/context";
 
 function Routing(){
  const user = useContext(AuthContext);
-
+  const FourZeroFour = () => <h3>404</h3>;
   console.log('Routing.user', user);
   return (
     <Router>
       {user ?
       <NavMenu/>: null}
       <Switch>
-        <Route path="/orders">
+        <Route exact path="/orders">
           {!user ? <Redirect to="/login" /> : 
           <Orders/>}
         </Route>
       
-        <Route path="/login">
+        <Route exact path="/login">
           {!user ? <Login/> : <Redirect to="/orders" />}
         </Route>
         <Route exact path="/">
           {!user ? <Redirect to="/login" /> : <Redirect to="/orders" />}
+        </Route>
+        <Route path='*' exact={true}  >
+          {!user ? <Redirect to="/login" /> : <FourZeroFour/>}
         </Route>
       </Switch>
     </Router>

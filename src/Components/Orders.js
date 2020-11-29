@@ -7,6 +7,8 @@ import DataTable from './DataTable';
 
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import moment from 'moment';
+import 'moment-timezone';
 
 const useStyles = makeStyles(() => ({
   orderH3: {
@@ -26,10 +28,11 @@ function Orders() {
     { 
       id: 'bookingDate', label: 'Booking Date', minWidth: 100,
       format: (value) => {
-        if(value._seconds) {
-          return value._seconds;
-        } else{
-          return value;
+        const timeStampVal = value._seconds ? value._seconds : value;
+        if((new Date(timeStampVal)).getTime() > 0){
+          return moment(moment.unix(timeStampVal)).tz(moment.tz.guess()).format('DD.MM.YYYY')
+        } else {
+          return null;
         }
       }
     },
@@ -41,8 +44,17 @@ function Orders() {
       id: 'customer', label: 'Customer', minWidth: 100,
       format: (value) => value.name ? value.name : '', 
     },
+    {
+      id: 'action', label: '', minWidth: 50,
+      items: [
+        {
+          name: 'Edit',
+          editDataPath: '/orders/edit/',
+        }
+      ]
+    }
   ];
-  const fieldNameForStartAfter = 'bookingDate._seconds';
+  const editDataPath = '/orders/edit/';
   const searchParams = {
     collectionName: 'orders',
     filters: [],
@@ -106,7 +118,7 @@ function Orders() {
   return (
     <div>
       <h3 className={classes.orderH3}>Orders</h3>
-      <DataTable columns={columns} searchParams={searchParams} apiEndPoint={apiEndPoint} fieldNameForStartAfter={fieldNameForStartAfter} />
+      <DataTable columns={columns} searchParams={searchParams} apiEndPoint={apiEndPoint} editDataPath={editDataPath} />
     </div>
   )
 }

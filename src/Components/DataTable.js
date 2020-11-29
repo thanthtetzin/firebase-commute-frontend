@@ -7,6 +7,7 @@ import {
 from '@material-ui/core';
 import { firebaseAuth } from "../Firebase/init";
 import axios from 'axios';
+import BorderColorIcon from '@material-ui/icons/BorderColor';
 import { KeyboardArrowLeftRounded, KeyboardArrowRightRounded } from '@material-ui/icons';
 import _get from 'lodash/get';
 import "./DataTable.scss";
@@ -91,7 +92,7 @@ function Datatable(props){
   const handlePrevNextButtonDisable = () => {
     const prevFirstItemInfo = prevFirstItems.current.find(f => f.firstItemInRows === data.listData.firstItemInRows);
     prevButtonDisable.current = (prevFirstItemInfo && !prevFirstItemInfo.prevFirstItem) || data.isLoading ? true : false;
-    nextButtonDisable.current = data.isLoading ? true : false;
+    nextButtonDisable.current = !data.listData.lastItemInRows || data.isLoading ? true : false;
   }
   
   const loadData = async () => {
@@ -148,19 +149,38 @@ function Datatable(props){
         return(
           <TableRow hover role="checkbox" tabIndex={-1} key={`dataRow-${rowindex}`}>
             {columns.map((column) => {
-              const rowfieldVal = row[column.id];
-              // console.log(rowfieldVal)
-              // console.log(fieldVal);
-              let cellVal = '';
-              if (rowfieldVal) {
-                cellVal = column.format ? column.format(rowfieldVal) : rowfieldVal;
+              if(column.id === 'action'){
+                let actionElements = [];
+                column.items.forEach((actionItem) => {
+                  switch(actionItem.name){
+                    case 'Edit':
+                      actionElements.push(<a title="Edit" href={`${actionItem.editDataPath}${row.uid}`} key={`dataRow-${rowindex}-dataCell-${column.id}-${actionItem.name}`}>
+                                            <BorderColorIcon color="action" style={{fontSize: '1.1rem'}} />
+                                          </a>);   
+                      break;
+                    default:
+                      break;
+                  }
+                  
+                });
+                return (
+                  <TableCell key={`dataRow-${rowindex}-dataCell-${column.id}`} >
+                    {actionElements}
+                  </TableCell>
+                );
+              } 
+              else {
+                const rowfieldVal = row[column.id];
+                let cellVal = '';
+                if (rowfieldVal) {
+                  cellVal = column.format ? column.format(rowfieldVal) : rowfieldVal;
+                }
+                return(
+                  <TableCell key={`dataRow-${rowindex}-dataCell-${column.id}`} >
+                    {cellVal}
+                  </TableCell>
+                );
               }
-              // console.log(cellVal);
-              return(
-                <TableCell key={`dataRow-${rowindex}-dataCell-${column.id}`} >
-                  {cellVal}
-                </TableCell>
-              );
             })}
           </TableRow>
         );
@@ -186,8 +206,6 @@ function Datatable(props){
           </TableHead>
           
           {!data.isLoading ? rowsLoadedTable : null}
-          
-          
           
         </Table>
         {data.isLoading ? spinnner : null }
