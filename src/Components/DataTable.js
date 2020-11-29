@@ -90,9 +90,11 @@ function Datatable(props){
     }
   };
   const handlePrevNextButtonDisable = () => {
+    console.log(data.listData.firstItemInRows)
+
     const prevFirstItemInfo = prevFirstItems.current.find(f => f.firstItemInRows === data.listData.firstItemInRows);
     prevButtonDisable.current = (prevFirstItemInfo && !prevFirstItemInfo.prevFirstItem) || data.isLoading ? true : false;
-    nextButtonDisable.current = !data.listData.lastItemInRows || data.isLoading ? true : false;
+    nextButtonDisable.current = data.listData.rows.length < data.searchParams.limit || data.isLoading ? true : false;
   }
   
   const loadData = async () => {
@@ -114,8 +116,8 @@ function Datatable(props){
         const rows = dataResult.data;
         const newListData = {
           rows: rows,
-          firstItemInRows: rows.length ? rows[0].uid : null,
-          lastItemInRows: rows.length && rows[rows.length - 1] ? rows[rows.length - 1].uid : null
+          firstItemInRows: rows.length ? rows[0].docId : null,
+          lastItemInRows: rows.length && rows[rows.length - 1] ? rows[rows.length - 1].docId : null
         }
 
         pushToPrevFirsItems({
@@ -123,11 +125,12 @@ function Datatable(props){
           prevFirstItem: prevFirstItemInRows.current
         });
         console.log('prevFirstItems: ', prevFirstItems.current);
-        
+        console.log('rows: ', newListData.rows)
+
         data.isLoading = false;
         setData({ ...data, listData: newListData || null });
-        //setData({ ...data, firstItemInRows: rows.length ? rows[0].uid : null });
-        //setData({ ...data, lastItemInRows: rows.length && dataResult.data[dataResult.data.length - 1] ?  dataResult.data[dataResult.data.length - 1].uid : null });
+        //setData({ ...data, firstItemInRows: rows.length ? rows[0].docId : null });
+        //setData({ ...data, lastItemInRows: rows.length && dataResult.data[dataResult.data.length - 1] ?  dataResult.data[dataResult.data.length - 1].docId : null });
       }
       catch(error){
         console.error(`Error when calling to get orders: ${error.message}`);
@@ -154,7 +157,7 @@ function Datatable(props){
                 column.items.forEach((actionItem) => {
                   switch(actionItem.name){
                     case 'Edit':
-                      actionElements.push(<a title="Edit" href={`${actionItem.editDataPath}${row.uid}`} key={`dataRow-${rowindex}-dataCell-${column.id}-${actionItem.name}`}>
+                      actionElements.push(<a title="Edit" href={`${actionItem.editDataPath}${row.docId}`} key={`dataRow-${rowindex}-dataCell-${column.id}-${actionItem.name}`}>
                                             <BorderColorIcon color="action" style={{fontSize: '1.1rem'}} />
                                           </a>);   
                       break;

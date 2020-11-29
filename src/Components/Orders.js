@@ -24,7 +24,7 @@ function Orders() {
   });
 
   const columns = [
-    { id: 'uid', label: 'ID', minWidth: 170, },
+    { id: 'docId', label: 'ID', minWidth: 170, },
     { id: 'title', label: 'Title', minWidth: 170, },
     { 
       id: 'bookingDate', label: 'Booking Date', minWidth: 100,
