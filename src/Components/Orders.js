@@ -24,6 +24,7 @@ function Orders() {
   });
 
   const columns = [
+    { id: 'uid', label: 'ID', minWidth: 170, },
     { id: 'title', label: 'Title', minWidth: 170, },
     { 
       id: 'bookingDate', label: 'Booking Date', minWidth: 100,
@@ -59,9 +60,12 @@ function Orders() {
     collectionName: 'orders',
     filters: [],
     orderBy: {
-      //fieldName: 'customer',
-      fieldName: 'customer',
-      direction: 'asc'
+      fieldName: 'bookingDate',
+      direction: 'desc',
+      mockValueIfNotFoundInDoc: { 
+        integerValue: '0', 
+        valueType: 'integerValue' 
+      }
     },
     limit: 10,
   }
