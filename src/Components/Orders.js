@@ -50,7 +50,7 @@ function Orders() {
       items: [
         {
           name: 'Edit',
-          editDataPath: '/orders/edit/',
+          editDataPath: '/orders/view/',
         }
       ]
     }

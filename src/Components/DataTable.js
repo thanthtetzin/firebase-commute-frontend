@@ -4,10 +4,14 @@ import {
   Table, TableHead, TableBody,TableCell,TableContainer,TableFooter,TablePagination,TableRow,
   Paper,IconButton, Grid, CircularProgress
 }
+
 from '@material-ui/core';
+import { Link } from 'react-router-dom';
+
 import { firebaseAuth } from "../Firebase/init";
 import axios from 'axios';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
+import DescriptionIcon from '@material-ui/icons/Description';
 import { KeyboardArrowLeftRounded, KeyboardArrowRightRounded } from '@material-ui/icons';
 import _get from 'lodash/get';
 import "./DataTable.scss";
@@ -157,9 +161,16 @@ function Datatable(props){
                 column.items.forEach((actionItem) => {
                   switch(actionItem.name){
                     case 'Edit':
-                      actionElements.push(<a title="Edit" href={`${actionItem.editDataPath}${row.docId}`} key={`dataRow-${rowindex}-dataCell-${column.id}-${actionItem.name}`}>
-                                            <BorderColorIcon color="action" style={{fontSize: '1.1rem'}} />
-                                          </a>);   
+                      // actionElements.push(<a title="View Details" href={`${actionItem.editDataPath}${row.docId}`} key={`dataRow-${rowindex}-dataCell-${column.id}-${actionItem.name}`}>
+                      //                       <DescriptionIcon color="action" style={{fontSize: '1.2rem'}} />
+                      //                     </a>);
+                      
+                      actionElements.push(<Link title="View Details" to={`${actionItem.editDataPath}${row.docId}`} 
+                                            key={`dataRow-${rowindex}-dataCell-${column.id}-${actionItem.name}`}
+                                            target="_blank"
+                                          >
+                                            <DescriptionIcon color="action" style={{fontSize: '1.2rem'}} />
+                                          </Link>);
                       break;
                     default:
                       break;
