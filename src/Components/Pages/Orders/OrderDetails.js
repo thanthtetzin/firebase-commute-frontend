@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import { makeStyles } from '@material-ui/core/styles';
-import {Grid, Button, Input, FormControl, InputLabel, Card, CardMedia, CardContent, CardActions, Typography, IconButton} from '@material-ui/core';
-import AccountCircleTwoToneIcon from '@material-ui/icons/AccountCircleTwoTone';
-import FaceTwoToneIcon from '@material-ui/icons/FaceTwoTone';
+import { Grid, Button, Input, FormControl, InputLabel, Card, CardMedia, CardContent, CardActions, Typography } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
-import PermContactCalendarTwoToneIcon from '@material-ui/icons/PermContactCalendarTwoTone';
 import LocationCityIcon from '@material-ui/icons/LocationCity';
 import { firebaseAuth } from "../../../Firebase/init";
 import "./OrderDetails.scss";
@@ -137,7 +134,7 @@ function OrderDetails() {
         json: true
       })
       try{
-        const result = await axiosClient({
+        await axiosClient({
           method: 'put',
           url: `/documents/orders/${id}`,
           data: clonedOrderFieldsForUpdate,
@@ -177,7 +174,7 @@ function OrderDetails() {
                       <Typography component="h6" variant="h6"  gutterBottom>
                         Order Details
                       </Typography>
-                      <Grid item item style={{marginTop: 20}}>
+                      <Grid item style={{marginTop: 20}}>
                         <FormControl fullWidth required>
                           <InputLabel htmlFor="txtTitle" shrink>Title</InputLabel>
                           <Input
