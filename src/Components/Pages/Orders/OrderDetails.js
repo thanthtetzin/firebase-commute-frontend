@@ -51,13 +51,16 @@ function OrderDetails() {
       bookingDate: 0,
     },
     isLoading: true,
+    update: {
+      processing: false,
+      success: false,
+      showMsg: false,
+    },
   });
   useEffect(() => {
     loadData();
   }, [])
   const { id } = useParams();
-
-  console.log('data: ', data);
   
   const loadData = async () => {
     const client = axios.create({
@@ -76,12 +79,14 @@ function OrderDetails() {
           }
         });
         if(result.data && Object.keys(result.data).length) {
+          console.log(result.data)
           let bookingDateTimeStampVal = result.data.bookingDate._seconds ? result.data.bookingDate._seconds : result.data.bookingDate;
           if(!bookingDateTimeStampVal){
             bookingDateTimeStampVal = 0;
           }
           if((new Date(bookingDateTimeStampVal)).getTime() >= 0){
-            result.data.bookingDate = moment(moment.unix(bookingDateTimeStampVal)).tz(moment.tz.guess()).format('YYYY-MM-DD');
+            result.data.bookingDate = moment.tz(moment.unix(bookingDateTimeStampVal), moment.tz.guess()).format('YYYY-MM-DD');
+            //result.data.bookingDate = moment(moment.unix(bookingDateTimeStampVal)).tz(moment.tz.guess()).format('YYYY-MM-DD');
           }
           data.orderFieldsForUpdate = {
             title: result.data.title,
@@ -111,7 +116,7 @@ function OrderDetails() {
       bookingDate: data.orderFieldsForUpdate.bookingDate,
     } });
   };
-  const handleSubmit = (event) => {
+  const handleSubmit = async event => {
     const form = event.currentTarget;
     event.preventDefault();
     console.log(form.checkValidity());
@@ -119,24 +124,46 @@ function OrderDetails() {
       event.stopPropagation();
       form.reportValidity();
     } else{
-
-      console.log(data);
       const clonedOrderFieldsForUpdate = JSON.parse(JSON.stringify(data.orderFieldsForUpdate));
-      clonedOrderFieldsForUpdate.bookingDate = moment(clonedOrderFieldsForUpdate.bookingDate, "YYYY-MM-DD").valueOf();
-      console.log('clonedOrderFieldsForUpdate: ', clonedOrderFieldsForUpdate)
-      // console.log(data.email, ' ', data.password);
-      // setData({...data, loginFailed: false});
-      // firebaseAuth.signInWithEmailAndPassword(data.email, data.password)
-      // .then((user) => {
-      //   console.log("Login User: ", user);
-      //   console.log(firebaseAuth.currentUser);
-      // })
-      // .catch((error) => {
-      //   console.log("Error in Login: ", error.message);
-      //   setData({...data, loginFailed: true});
-      // });
+      clonedOrderFieldsForUpdate.bookingDate = moment(clonedOrderFieldsForUpdate.bookingDate, "YYYY-MM-DD").unix();
+      console.log('clonedOrderFieldsForUpdate: ', clonedOrderFieldsForUpdate);
+      setData({...data, update: {
+        processing: true,
+        success: false,
+        showMsg: false
+      }});
+      const axiosClient = axios.create({
+        baseURL: process.env.REACT_APP_BACKEND_API_ENDPOINT,
+        json: true
+      })
+      try{
+        const result = await axiosClient({
+          method: 'put',
+          url: `/documents/orders/${id}`,
+          data: clonedOrderFieldsForUpdate,
+          headers: {
+            'AuthToken': await firebaseAuth.currentUser.getIdToken(true)
+          }
+        });
+        setData({...data, update: {
+          processing: false,
+          success: true,
+          showMsg: true
+        }});
+      }
+      catch(error) {
+        if (error.response) {
+          console.log(error.response.data);
+        }
+        setData({...data, update: {
+          processing: false,
+          success: false,
+          showMsg: true
+        }});
+      }
     }
   }
+  const msgToShow = data.update.success ? <p className='success-p'>Success!</p> : <p className='error-p'>Update Failed! See console for more details.</p>;
   return (
         !data.orderInfo
         ? null
@@ -156,6 +183,7 @@ function OrderDetails() {
                           <Input
                             id="txtTitle"
                             type='text'
+                            disabled={data.update.processing}
                             value={data.orderFieldsForUpdate.title}
                             onChange={handleTitleChange()}
                           />
@@ -167,21 +195,23 @@ function OrderDetails() {
                           <Input
                             id="dtpBookingDate"
                             type='date'
+                            disabled={data.update.processing}
                             value={data.orderFieldsForUpdate.bookingDate}
                             onChange={handleBookingDateChange()}
                           />
                         </FormControl>
                       </Grid>
-                      { data.loginFailed &&
-                        <Grid item>
-                          <p className='error-p'>Error in Updating</p>
-                        </Grid>
+                      { data.update.showMsg ?
+                        msgToShow : null
                       }
                     </CardContent>
                     <CardActions>
-                      <Button size="small" type="submit"  color="primary"
+                      <Button type="submit" 
+                        color="primary"
+                        size="small"
+                        disabled={data.update.processing}
                       >
-                        Update
+                        {data.update.processing ? 'Updating...' : 'Update'}
                       </Button>
                     </CardActions>
                   </Card>
@@ -237,13 +267,6 @@ function OrderDetails() {
                   </Card>
                 </Grid>
               </Grid>
-            
-          
-              
-              
-
-              
-
             </Grid>
             
           </Grid>

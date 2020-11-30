@@ -32,6 +32,10 @@
   font-size: 11px;
   color:red;
 }
+.success-p{
+  font-size: 11px;
+  color:green;
+}
 
 @keyframes App-logo-spin {
   from {
