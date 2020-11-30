@@ -70,7 +70,7 @@ function OrderDetails() {
         console.log('idToken ', idToken);
         const result = await client({
           method: 'get',
-          url: `/doc/orders/${id}`,
+          url: `/documents/orders/${id}`,
           headers: {
             'AuthToken': idToken
           }
@@ -227,6 +227,7 @@ function OrderDetails() {
                         </Typography>
                         <Typography style={{fontSize: '14px'}} variant="subtitle1" color="textSecondary">
                           {data.orderInfo.address && data.orderInfo.address.city ? data.orderInfo.address.city : '-'}
+                          {data.orderInfo.address && data.orderInfo.address.zip ? ` ${data.orderInfo.address.zip}` : ' -'}
                         </Typography>
                         <Typography style={{fontSize: '14px'}} variant="subtitle1" color="textSecondary">
                           {data.orderInfo.address && data.orderInfo.address.country ? data.orderInfo.address.country : '-'}

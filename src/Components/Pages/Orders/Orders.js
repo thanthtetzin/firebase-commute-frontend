@@ -73,7 +73,7 @@ function Orders() {
           console.log('idToken ', idToken);
           const result = await client({
             method: 'get',
-            url: `/doc/users/${firebaseAuth.currentUser.uid}`,
+            url: `/documents/users/${firebaseAuth.currentUser.uid}`,
             headers: {
               'AuthToken': idToken
             }
