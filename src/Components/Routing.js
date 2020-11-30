@@ -10,9 +10,9 @@ import {
 //import NavMenu from "./NavMenu";
 import { AuthContext } from "../Firebase/context";
 
-const Login = lazy(() => import('./Login'));
-const Orders = lazy(() => import('./Orders'));
-const OrderDetails = lazy(() => import('./OrderDetails'));
+const Login = lazy(() => import('./Pages/Login/Login'));
+const Orders = lazy(() => import('./Pages/Orders/Orders'));
+const OrderDetails = lazy(() => import('./Pages/Orders/OrderDetails'));
 const NavMenu = lazy(() => import('./NavMenu'));
 
 function Routing(){

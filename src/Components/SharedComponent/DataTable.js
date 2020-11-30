@@ -8,7 +8,7 @@ import {
 from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
-import { firebaseAuth } from "../Firebase/init";
+import { firebaseAuth } from "../../Firebase/init";
 import axios from 'axios';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import DescriptionIcon from '@material-ui/icons/Description';

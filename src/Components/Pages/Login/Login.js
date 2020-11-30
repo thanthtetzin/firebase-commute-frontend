@@ -7,9 +7,9 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import { firebaseAuth } from "../Firebase/init";
+import { firebaseAuth } from "../../../Firebase/init";
 import axios from 'axios';
-import { AuthContext } from "../Firebase/context";
+import { AuthContext } from "../../../Firebase/context";
 
 const client = axios.create({
   baseURL: process.env.REACT_APP_BACKEND_API_ENDPOINT,

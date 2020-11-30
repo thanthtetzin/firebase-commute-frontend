@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { firebaseAuth } from "../Firebase/init";
+import { firebaseAuth } from "../../../Firebase/init";
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
-import DataTable from './DataTable';
+import DataTable from '../../SharedComponent/DataTable';
 import moment from 'moment';
 import 'moment-timezone';
 
