@@ -6,4 +6,3 @@ const config = env[process.env.NODE_ENV];
 
 firebase.initializeApp(config.firebaseConfig);
 export const firebaseAuth = firebase.auth();
-//export const firestore = firebase.firestore();

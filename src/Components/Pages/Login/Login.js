@@ -39,7 +39,10 @@ function Login() {
     email: '',
     password: '',
     showPassword: false,
-    loginFailed: false,
+    loginState: {
+      loggingIn: false,
+      loginFailed: false,
+    }
   });
   const handleChange = (prop) => (event) => {
     setData({ ...data, [prop]: event.target.value });
@@ -56,7 +59,11 @@ function Login() {
       form.reportValidity();
     } else{
       console.log(data.email, ' ', data.password);
-      setData({...data, loginFailed: false});
+      const newLoginState = 
+      setData({...data, loginState: {
+        loggingIn: true,
+        loginFailed: false
+      }});
       firebaseAuth.signInWithEmailAndPassword(data.email, data.password)
       .then((user) => {
         console.log("Login User: ", user);
@@ -64,7 +71,10 @@ function Login() {
       })
       .catch((error) => {
         console.log("Error in Login: ", error.message);
-        setData({...data, loginFailed: true});
+        setData({...data, loginState: {
+          loggingIn: false,
+          loginFailed: true
+        }});
       });
     }
   }
@@ -79,6 +89,8 @@ function Login() {
                     <Input
                       id="txtEmail"
                       type='email'
+                      required
+                      disabled={data.loginState.loggingIn}
                       value={data.email}
                       onChange={handleChange('email')}
                     />
@@ -90,6 +102,8 @@ function Login() {
                     <Input
                       id="txtPassword"
                       type={data.showPassword ? 'text' : 'password'}
+                      required
+                      disabled={data.loginState.loggingIn}
                       value={data.password}
                       onChange={handleChange('password')}
                       endAdornment={
@@ -97,6 +111,7 @@ function Login() {
                           <IconButton
                             aria-label="toggle password visibility"
                             onClick={handleClickShowPassword}
+                            disabled={data.loginState.loggingIn}
                           >
                             {data.showPassword ? <Visibility /> : <VisibilityOff />}
                           </IconButton>
@@ -105,16 +120,19 @@ function Login() {
                     />
                   </FormControl>
                 </Grid>
-                { data.loginFailed &&
+                { data.loginState.loginFailed &&
                   <Grid item>
                     <p className='error-p'>Invalid Login email or password</p>
                   </Grid>
                 }
                 <Grid item className={`${classes.margin_top_30}`}>
-                  <Button type="submit" fullWidth variant="outlined" color="primary"
-
-                  >
-                    Log in
+                  <Button id="btnLogin" 
+                    type="submit" 
+                    disabled={data.loginState.loggingIn}
+                    fullWidth 
+                    variant="outlined" 
+                    color="primary">
+                    {data.loginState.loggingIn ? 'Logging in...' : 'Log in'}
                   </Button>
                 </Grid>
                 

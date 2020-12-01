@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Redirect,
   useHistory
@@ -27,12 +27,12 @@ const useStyles = makeStyles({
   },
   nav_menu: {
     height: '50px',
-    "box-shadow": "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 13px 0 rgba(0, 0, 0, 0.19)"
+    boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 13px 0 rgba(0, 0, 0, 0.19)"
   }
 });
 export default function NavMenu() {
   const classes = useStyles();
-  const [data, setData] = React.useState({
+  const [data, setData] = useState({
     anchorEl: null,
     showError: false,
     errorMsg: null,
@@ -58,7 +58,7 @@ export default function NavMenu() {
       return <Redirect to="/" />
     }).catch(function(error) {
       // An error happened.
-      console.log(error.message);
+      console.log(`Error in log out: ${error.message}`);
       setData({ ...data, showError: true });
       setData({ ...data, errorMsg: error.message });
     });
@@ -76,7 +76,6 @@ export default function NavMenu() {
         open={Boolean(data.anchorEl)}
         onClose={handleMenuClose}
       >
-        <MenuItem to="/orders">My orders</MenuItem>
         <MenuItem onClick={logout}>Logout</MenuItem>
       </Menu>
 

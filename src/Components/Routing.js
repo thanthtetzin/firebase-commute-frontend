@@ -5,9 +5,6 @@ import {
   Route,
   Redirect
 } from "react-router-dom";
-// import Login from "./Login";
-//import Orders from "./Orders";
-//import NavMenu from "./NavMenu";
 import { AuthContext } from "../Firebase/context";
 
 const Login = lazy(() => import('./Pages/Login/Login'));

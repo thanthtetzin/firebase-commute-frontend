@@ -1,16 +1,13 @@
 import { makeStyles } from '@material-ui/core/styles';
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  Table, TableHead, TableBody,TableCell,TableContainer,TableFooter,TablePagination,TableRow,
-  Paper,IconButton, Grid, CircularProgress
+  Table, TableHead, TableBody,TableCell,TableContainer,TableRow,
+  IconButton, Grid, CircularProgress
 }
-
 from '@material-ui/core';
 import { Link } from 'react-router-dom';
-
 import { firebaseAuth } from "../../Firebase/init";
 import axios from 'axios';
-import BorderColorIcon from '@material-ui/icons/BorderColor';
 import DescriptionIcon from '@material-ui/icons/Description';
 import { KeyboardArrowLeftRounded, KeyboardArrowRightRounded } from '@material-ui/icons';
 import _get from 'lodash/get';
