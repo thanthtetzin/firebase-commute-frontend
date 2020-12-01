@@ -139,6 +139,7 @@ function Datatable(props) {
     if (firebaseAuth.currentUser && apiEndPoint) {
       try {
         const idToken = await firebaseAuth.currentUser.getIdToken(true);
+        console.log('Id_Token: ' , idToken);
         const dataResult = await axiosClient({
           method: "get",
           url: `${apiEndPoint}${JSON.stringify(data.searchParams)}`,
