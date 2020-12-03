@@ -1,70 +1,26 @@
-# Getting Started with Create React App
+# firebase-commute-frontend
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Preparation before running the frontend react app
+- git clone this `firebase-commute-frontend` repository.
+- Run `npm install` at the project directory
+- Please make sure the backend app (firebase-commute-backend) is running properly.
+- Based on the port the backend app is currently running, please keep the same at `.env.development`. Currently, there is env variable of `REACT_APP_BACKEND_API_ENDPOINT=http://localhost:4000` at `.env.development` file.
 
-In the project directory, you can run:
+## Running the frontend react app
+- Run `npm start`. 
+- Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- You will see login Page. Please login with correct credentials. After login success, you will be able see firstly **Orders List** page.
 
-### `npm start`
+At **Orders List** page, you will see
+- List of orders sorted by **bookingDate** paginated by 10 records per page with **previous** and **next** navigation through the records.
+- Can click the View Icon on the right of each record to view the order details. 
+- When click, it will redirect you to **Order details** page by opening the new tab.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+At **Order details** page, you can edit the `title` and `bookingDate`. Other fields are only for viewing.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+You can logout by going to **Nav menu** on top, click **person icon** and click `Logout`.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Testing the frontend react app
+- Run `npm test` to run the simple unit tests
