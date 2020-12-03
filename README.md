@@ -1,6 +1,6 @@
 # firebase-commute-frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). Node version **v12.19.0**
 
 ## Preparation before running the frontend react app
 - git clone this `firebase-commute-frontend` repository.
